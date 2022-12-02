@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+  <h1>T:Spark Server,post,fetch</h1>
+  <div class="container">
+    <p>model:</p>
+    <input type="text" name="model" id="model">
+    <p>rok:</p>
+    <select name="rok" id="rok">
+      <option value="2000">2000</option>
+      <option value="2001">2001</option>
+      <option value="2002">2002</option>
+      <option value=2003">2003</option>
+      <option value="2004">2004</option>
+      <option value="2005">2005</option>
+      <option value="2006">2006</option>
+      <option value="2007">2007</option>
+    </select>
+    </br>
+    <label>poduszki powietrzne: kierowca | pasażer | tylna kanapa | boczne z tyłu:</label>
+    <input type="checkbox" name="kierowca" id="k">
+    <input type="checkbox" name="pasazer" id="p">
+    <input type="checkbox" name="kanapa" id="t">
+    <input type="checkbox" name="boczne" id="b">
+    </br>
+    <label>kolor: </label> <input type="color" name="kolor" id="kolor"/>
+  </div>
+  <p><button id="addBtn">dodaj</button></p>
+<p><a href="/dane">strona z danymi</a></p>
+<script src="./serv.js"></script>
+</body>
+</html>

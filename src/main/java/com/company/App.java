@@ -27,6 +27,12 @@ class Airbag{
     }
 }
 class Car{
+    UUID id=null;
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     String model;
     int rok;
     ArrayList<Airbag> data;
@@ -58,6 +64,7 @@ class Car{
     @Override
     public String toString() {
         return "Car{" +
+                "id='" + id +'\'' +
                 "model='" + model + '\'' +
                 ", rok=" + rok +
                 ", poduszki=" + Arrays.deepToString(data.toArray()) +
@@ -67,6 +74,7 @@ class Car{
 }
 public class App {
     private static Gson gson = new Gson();
+    private static ArrayList<Car> cars = new ArrayList<>();
     public static void main(String[] args) {
         externalStaticFileLocation("C:\\appfolder\\src\\main\\resources\\public");
         staticFiles.location("/public");
@@ -78,9 +86,9 @@ public class App {
     private static String AddFunction(Request req,Response res){
         UUID uuid = Generators.randomBasedGenerator().generate();
         Car car = gson.fromJson(req.body(), Car.class);
-        System.out.println(car.toString());
+        car.setId(uuid);
+        cars.add(car);
         res.type("application/json");
-        return gson.toJson(req.body());
-
+        return gson.toJson(car.toString());
     }
 }

@@ -3,34 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>T:Spark Server,post,fetch</h1>
-  <div class="container">
-    <p>model:</p>
-    <input type="text" name="model" id="model">
-    <p>rok:</p>
-    <select name="rok" id="rok">
-      <option value="2000">2000</option>
-      <option value="2001">2001</option>
-      <option value="2002">2002</option>
-      <option value=2003">2003</option>
-      <option value="2004">2004</option>
-      <option value="2005">2005</option>
-      <option value="2006">2006</option>
-      <option value="2007">2007</option>
-    </select>
-    </br>
-    <label>poduszki powietrzne: kierowca | pasażer | tylna kanapa | boczne z tyłu:</label>
-    <input type="checkbox" name="kierowca" id="k">
-    <input type="checkbox" name="pasazer" id="p">
-    <input type="checkbox" name="kanapa" id="t">
-    <input type="checkbox" name="boczne" id="b">
-    </br>
-    <label>kolor: </label> <input type="color" name="kolor" id="kolor"/>
+
+  <div class="header">
+    <a href="/index.html">index</a>
+    <a href="/cars.html">edit/update cars</a>
   </div>
-  <p><button id="addBtn">dodaj</button></p>
-<p><a href="/dane">strona z danymi</a></p>
-<script src="./serv.js"></script>
+  <div id="main-container">
+    <div class="button-container">
+      <button id="addBtn">dodaj na serwer</button>
+    </div>
+    <div class="data-container">
+      <div class="data-item">
+        <input type="text" name="model" id="model">
+        <label>   model</label>
+      </div>
+      <div class="data-item">
+
+        <select name="rok" id="rok">
+          <option value="2000">2000</option>
+          <option value="2001">2001</option>
+          <option value="2002">2002</option>
+          <option value=2003">2003</option>
+          <option value="2004">2004</option>
+          <option value="2005">2005</option>
+          <option value="2006">2006</option>
+          <option value="2007">2007</option>
+        </select>
+        <label>rok</label>
+      </div>
+
+      <div class="data-item">
+        <div class="checkboxes">
+          <input type="checkbox" name="kierowca" id="k">
+          <input type="checkbox" name="pasazer" id="p">
+          <input type="checkbox" name="kanapa" id="t">
+          <input type="checkbox" name="boczne" id="b">
+        </div>
+        <label>poduszki powietrzne:</br> kierowca | pasażer | tylna kanapa | boczne z tyłu</label>
+      </div>
+      <div class="data-item">
+        <input type="color" name="kolor" id="kolor"/><label>kolor </label>
+      </div>
+
+    </div>
+
+  </div>
+
+
+<script>
+  fetchPostAsync = async () => {
+
+    const data = JSON.stringify({
+      model:document.getElementById("model").value,
+      rok:document.getElementById("rok").value,
+      data: [
+        {name: "kierowca", value: document.getElementById("k").checked},
+        {name: "pasażer", value: document.getElementById("p").checked},
+        {name: "kanapa", value: document.getElementById("t").checked},
+        {name: "boczne", value: document.getElementById("b").checked},
+      ],
+      color:document.getElementById("kolor").value
+    })
+
+    const options = {
+      method: "POST",
+      body: data,
+    };
+
+    let response = await fetch("/add", options)
+
+    if (!response.ok)
+      return response.status
+    else
+      return await response.json() // response.json
+
+  }
+  document.getElementById("addBtn").onclick = async () => {
+    let json = await fetchPostAsync()
+    alert(json)
+  }
+</script>
 </body>
 </html>

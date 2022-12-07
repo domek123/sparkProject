@@ -1,77 +1,40 @@
 package com.company;
 import static spark.Spark.*;
 
+import com.google.gson.*;
 import java.util.*;
 
 import com.fasterxml.uuid.Generators;
-import com.google.gson.Gson;
 import spark.Request;
 import spark.Response;
 import static spark.Spark.externalStaticFileLocation;
 import static spark.Spark.staticFiles;
-class Airbag{
-    String name;
-    boolean value;
 
-    public Airbag(String name, boolean zazn) {
-        this.name = name;
-        this.value = zazn;
-    }
+class Id{
+    String id;
 
-    @Override
-    public String toString() {
-        return "Airbag{" +
-                "name='" + name + '\'' +
-                ", value=" + value +
-                '}';
+    public String getId() {
+        return id;
     }
 }
-class Car{
-    UUID id=null;
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
+class ModifyCar{
+    String id;
     String model;
-    int rok;
-    ArrayList<Airbag> data;
-    String color;
+    String rok;
 
-    public Car(String model, int rok, ArrayList<Airbag> poduszki, String kolor) {
-        this.model = model;
-        this.rok = rok;
-        this.data = poduszki;
-        this.color = kolor;
+    public String getId() {
+        return id;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public String getModel() {
+        return model;
     }
 
-    public void setRok(int rok) {
-        this.rok = rok;
-    }
-
-    public void setPoduszki(ArrayList<Airbag> poduszki) {
-        this.data = poduszki;
-    }
-
-    public void setKolor(String kolor) {
-        this.color = kolor;
-    }
-
-    @Override
-    public String toString() {
-        return "Car{" +
-                "id='" + id +'\'' +
-                "model='" + model + '\'' +
-                ", rok=" + rok +
-                ", poduszki=" + Arrays.deepToString(data.toArray()) +
-                ", kolor='" + color + '\'' +
-                '}';
+    public String getRok() {
+        return rok;
     }
 }
+
 public class App {
     private static Gson gson = new Gson();
     private static ArrayList<Car> cars = new ArrayList<>();
@@ -79,9 +42,9 @@ public class App {
         externalStaticFileLocation("C:\\appfolder\\src\\main\\resources\\public");
         staticFiles.location("/public");
         post("/add", (req, res) -> AddFunction(req,res));
-//        post("/deleteAll", (req, res) -> deleteAllFunction(req,res));
-//        post("/deleteId/:id", (req, res) -> deleteIdFunction(req,res));
-//        post("/deleteSelected", (req, res) -> deleteSelectedFunction(req,res));
+        post("/json", (req, res) -> GetCarsFunction(req,res));
+        post("/delete", (req, res) -> deleteIdFunction(req,res));
+        post("/update", (req, res) -> UpdateFunction(req,res));
     }
     private static String AddFunction(Request req,Response res){
         UUID uuid = Generators.randomBasedGenerator().generate();
@@ -90,5 +53,31 @@ public class App {
         cars.add(car);
         res.type("application/json");
         return gson.toJson(car.toString());
+    }
+    private static String GetCarsFunction(Request req,Response res){
+        return gson.toJson(cars);
+    }
+    private static String UpdateFunction(Request req, Response response){
+        ModifyCar modifiedCar = gson.fromJson(req.body(),ModifyCar.class);
+        ArrayList<Car> c = (ArrayList<Car>) cars.clone();
+        for(Car car : c){
+            if(car.getId().toString().equals(modifiedCar.getId())){
+                car.setModel(modifiedCar.getModel());
+                car.setRok(modifiedCar.getRok());
+            }
+        }
+        response.type("application/json");
+        return gson.toJson(cars);
+    }
+    private static String deleteIdFunction(Request req, Response response){
+        Id id = gson.fromJson(req.body(),Id.class);
+        ArrayList<Car> c = (ArrayList<Car>) cars.clone();
+        for(Car car : c){
+            if(car.getId().toString().equals(id.getId())){
+                cars.remove(car);
+            }
+        }
+        response.type("application/json");
+        return gson.toJson(cars);
     }
 }

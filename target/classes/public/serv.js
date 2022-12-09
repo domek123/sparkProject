@@ -11,7 +11,6 @@ GetData = async () => {
         return response.status
     else
         return await response.json() // response.json
-
 }
 
 
@@ -23,6 +22,7 @@ window.onload = async() =>{
 generatePage = (cars) =>{
     let i = 1;
     let html = ""
+
     html +="<div>";
     cars.forEach(c=>{
         html +="<div class='flex'>";

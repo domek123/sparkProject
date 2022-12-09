@@ -1,32 +1,4 @@
-.header{
-    height: 50px;
-    border-bottom: 2px dotted gray;
-    font-size: 20px;
-    display: flex;
-    align-items: center;
-    padding: 0 30px;
-    margin-bottom: 5px;
-}
-#main-container{
-    display: flex;
-}
-.button-container{
-    width:200px;
-    display: flex ;
-    justify-content: center;
-    padding-top:10px ;
-    border-right: 2px dotted gray;
-    margin-right: 10px;
-}
-.button-container button{
-    height: 25px;
-    color:red;
-    font-weight: bold;
-    background-color: unset;
-    border-radius: 25px;
-    border:2px solid red;
 
-}
 .data-item{
     display: flex;
     width: 300px;
@@ -34,7 +6,7 @@
     align-items: center;
 }
 #model, #rok, #kolor{
-    padding: 0px;
+    padding: 0;
     width: 100px;
     height: 30px;
     margin-right: 10px;

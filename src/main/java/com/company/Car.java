@@ -1,5 +1,7 @@
 package com.company;
 
+import com.fasterxml.uuid.Generators;
+
 import java.util.*;
 class Airbag{
     String name;
@@ -27,7 +29,7 @@ class Airbag{
     }
 }
 class Car{
-    UUID id=null;
+    UUID id= null;
 
     public void setId(UUID id) {
         this.id = id;
@@ -37,12 +39,23 @@ class Car{
     String rok;
     ArrayList<Airbag> data;
     String color;
+    boolean invoice;
+
+    public boolean getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(boolean invoice) {
+        this.invoice = invoice;
+    }
 
     public Car(String model, String rok, ArrayList<Airbag> poduszki, String kolor) {
         this.model = model;
         this.rok = rok;
         this.data = poduszki;
         this.color = kolor;
+        id = Generators.randomBasedGenerator().generate();
+        invoice = true;
     }
 
     public UUID getId() {

@@ -41,10 +41,6 @@ class Car{
     String color;
     boolean invoice;
 
-    public boolean getInvoice() {
-        return invoice;
-    }
-
     public void setInvoice(boolean invoice) {
         this.invoice = invoice;
     }
@@ -55,7 +51,7 @@ class Car{
         this.data = poduszki;
         this.color = kolor;
         id = Generators.randomBasedGenerator().generate();
-        invoice = true;
+        invoice = false;
     }
 
     public UUID getId() {

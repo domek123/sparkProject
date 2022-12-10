@@ -3,8 +3,8 @@ import static spark.Spark.*;
 
 import com.google.gson.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
+import java.nio.file.*;
 import java.util.*;
 
 import com.fasterxml.uuid.Generators;
@@ -52,7 +52,8 @@ public class App {
         post("/delete", App::deleteIdFunction);
         post("/update", App::UpdateFunction);
         post("/generate", App::GenerateFunction);
-        post("invoice", (req, res) -> InvoiceFunction(req,res));
+        post("/invoice", (req, res) -> InvoiceFunction(req,res));
+        get("/invoices", (req, res) -> InvoicesFunction(req,res));
     }
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
@@ -106,24 +107,69 @@ public class App {
         }
         return gson.toJson(cars);
     }
-    private static String InvoiceFunction(Request req,Response res) throws DocumentException, FileNotFoundException {
+    private static String InvoiceFunction(Request req,Response res) throws DocumentException, IOException {
         Id id = gson.fromJson(req.body(),Id.class);
+        Car carToPDF = null;
         for(Car car : cars){
             if(car.getId().toString().equals(id.getId())){
                 car.setInvoice(true);
+                carToPDF = car;
             }
         }
+        HashMap<String, BaseColor> map = new HashMap() {{
+            put("red", BaseColor.RED);
+            put("blue", BaseColor.BLUE);
+            put("yellow", BaseColor.YELLOW);
+            put("green", BaseColor.GREEN);
+            put("magenta", BaseColor.MAGENTA);
+            put("orange", BaseColor.ORANGE);
+        }};
+
         Document document = new Document(); // dokument pdf
         String path = "invoices/"+id.getId()+".pdf"; // lokalizacja zapisu
         PdfWriter.getInstance(document, new FileOutputStream(path));
 
         document.open();
         Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-        Chunk chunk = new Chunk("tekst", font); // akapit
-
+        Chunk chunk = new Chunk("FAKTURA dla: " + id.getId(), font);
+        Paragraph p = new Paragraph("", font);
+        document.add(p);
         document.add(chunk);
+        Chunk chunk2 = new Chunk("model: " + carToPDF.getModel(), font);
+        document.add(chunk2);
+        p = new Paragraph("", font);
+        document.add(p);
+        font = FontFactory.getFont(FontFactory.COURIER, 16, map.get(carToPDF.getColor()));
+        Chunk chunk3 = new Chunk("kolor: " + carToPDF.getColor(), font);
+        document.add(chunk3);
+        p = new Paragraph("", font);
+        document.add(p);
+        font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
+        Chunk chunk4 = new Chunk("rok: " + carToPDF.getRok(), font);
+        document.add(chunk4);        p = new Paragraph("", font);
+        document.add(p);
+        for(Airbag airbag : carToPDF.getData()){
+            Chunk chunk5 = new Chunk("poduszka: " + airbag.getName() + " - " + airbag.isValue(), font);
+            document.add(chunk5);
+            p = new Paragraph("", font);
+            document.add(p);
+        }
+        Image img = Image.getInstance("photos/samochod.jpg");
+        document.add(img);
+
         document.close();
         res.type("application/json");
         return gson.toJson(cars);
+    }
+    public static String InvoicesFunction(Request req,Response res) throws IOException {
+        String id = req.queryParams("id");
+        System.out.println(id);
+        res.type("application/octet-stream");
+        res.header("Content-Disposition", "attachment; filename=plik.pdf");
+
+        OutputStream outputStream = res.raw().getOutputStream();
+        Path p1 = Paths.get("invoices/"+ id + ".pdf");
+        outputStream.write(Files.readAllBytes(p1));
+        return "";
     }
 }

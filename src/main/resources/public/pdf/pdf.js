@@ -73,9 +73,9 @@ generatePage = (cars) =>{
         })
         html +="</div>";
         html +=`<div class='container-item box' style='background-color:`+c['color']+`;'></div>`;
-        html +="<div class='container-item'><button onclick='genVat(`"+c['id']+"`)'>generuj fakture VAT</bu'tton></div>";
+        html +="<div class='container-item'><button onclick='genVat(`"+c['id']+"`)'>generuj fakture VAT</button></div>";
         if(c['invoice']==true){
-            html +="<div class='container-item'><a href='/'>pobierz</a></div>";
+            html +="<div class='container-item'><a href='/invoices?id=" + c['id'] +"'>pobierz</a></div>";
         }
         html +="</div>";
         i++;

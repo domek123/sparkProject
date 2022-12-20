@@ -22,18 +22,6 @@ generateData = async () => {
     else
         return await response.json() // response.json
 }
-generateData = async () => {
-    const options = {
-        method: "POST",
-        data:{}
-    };
-    let response = await fetch("/generate", options)
-
-    if (!response.ok)
-        return response.status
-    else
-        return await response.json() // response.json
-}
 generateInvoice = async (id) => {
     const options = {
         method: "POST",
@@ -68,7 +56,7 @@ generatePage = (cars) =>{
         html +="<div class='container-item'>"+c['model']+"</div>";
         html +="<div class='container-item'>"+c['rok']+"</div>";
         html +="<div class='container-item flex-col'>";
-        c['data'].forEach(item=>{
+        c['airbags'].forEach(item=>{
             html +="<div>"+item['name']+":" + item['value'] +"</div>";
         })
         html +="</div>";

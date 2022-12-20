@@ -10,36 +10,13 @@ import java.util.*;
 import com.fasterxml.uuid.Generators;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import java.util.List;
+import java.util.stream.Collectors;
 import spark.Request;
 import spark.Response;
 
 import static spark.Spark.externalStaticFileLocation;
 import static spark.Spark.staticFiles;
-
-class Id{
-    String id;
-
-    public String getId() {
-        return id;
-    }
-}
-class ModifyCar{
-    String id;
-    String model;
-    String rok;
-
-    public String getId() {
-        return id;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public String getRok() {
-        return rok;
-    }
-}
 
 public class App {
     private static Gson gson = new Gson();
@@ -52,8 +29,11 @@ public class App {
         post("/delete", App::deleteIdFunction);
         post("/update", App::UpdateFunction);
         post("/generate", App::GenerateFunction);
-        post("/invoice", (req, res) -> InvoiceFunction(req,res));
-        get("/invoices", (req, res) -> InvoicesFunction(req,res));
+        post("/invoice", App::InvoiceFunction);
+        get("/invoices", App::InvoicesFunction);
+        post("/allCarInvoice", App::AllCarInvoice);
+        post("/yearCarInvoice", App::YearCarInvoice);
+        post("/priceCarInvoice", App::PriceCarInvoice);
     }
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
@@ -148,7 +128,7 @@ public class App {
         Chunk chunk4 = new Chunk("rok: " + carToPDF.getRok(), font);
         document.add(chunk4);        p = new Paragraph("", font);
         document.add(p);
-        for(Airbag airbag : carToPDF.getData()){
+        for(Airbag airbag : carToPDF.getAirbags()){
             Chunk chunk5 = new Chunk("poduszka: " + airbag.getName() + " - " + airbag.isValue(), font);
             document.add(chunk5);
             p = new Paragraph("", font);
@@ -171,5 +151,23 @@ public class App {
         Path p1 = Paths.get("invoices/"+ id + ".pdf");
         outputStream.write(Files.readAllBytes(p1));
         return "";
+    }
+    public static String AllCarInvoice(Request req,Response res) throws DocumentException, FileNotFoundException {
+        res.type("application/json");
+        return gson.toJson(Invoices.GenerateAllCarsInvoice(cars));
+    }
+    public static String YearCarInvoice(Request req,Response res) throws DocumentException, FileNotFoundException {
+        Year year = gson.fromJson(req.body(),Year.class);
+        List<Car> list = cars.stream().filter(car-> car.getRok().equals(year.getYear())).collect(Collectors.toList());
+        ArrayList<Car> l = new ArrayList<>(list);
+        res.type("application/json");
+        return gson.toJson(Invoices.GenerateYearCarsInvoice(l,year.getYear()));
+    }
+    public static String PriceCarInvoice(Request req,Response res) throws DocumentException, FileNotFoundException {
+        Prices prices = gson.fromJson(req.body(),Prices.class);
+        List<Car> list = cars.stream().filter(car-> car.getCena() > Integer.parseInt(prices.getMin()) && car.getCena() < Integer.parseInt(prices.getMax())).collect(Collectors.toList());
+        ArrayList<Car> l = new ArrayList<>(list);
+        res.type("application/json");
+        return gson.toJson(Invoices.GeneratePriceCarsInvoice(l,prices.getMin(),prices.getMax()));
     }
 }

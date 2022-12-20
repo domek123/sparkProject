@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./search.css"/>
+    <link rel="stylesheet" href="../global.css"/>
+
+</head>
+<body>
+
+<div class="header">
+    <a href="../index.html">index</a>
+    <a href="../cars/cars.html">edit/update cars</a>
+    <a href="../pdf/pdf.html">generate invoices</a>
+    <a href="./search.html">search invoices</a>
+</div>
+<div id="main-container">
+    <div class="button-container">
+        <button id="genBtn" style="height:40px">genereuj losowa baze samochodów</button>
+        <button id="allInvoicesBtn" class="invoiceBtn">faktura za wszystkie auta</button>
+        <div id="allCarInvoices" class="downloads"></div>
+        <select name="rok" id="rok" class="inputs">
+            <option value="2000">2000</option>
+            <option value="2001">2001</option>
+            <option value="2002">2002</option>
+            <option value=2003">2003</option>
+            <option value="2004">2004</option>
+            <option value="2005">2005</option>
+            <option value="2006">2006</option>
+            <option value="2007">2007</option>
+        </select>
+        <button id="yearInvoicesBtn" class="invoiceBtn">faktura - auta z danego rocznika</button>
+        <div id="yearCarInvoices" class="downloads"></div>
+        <input type="text" id="minPrice" class="inputs" value="10000">
+        <input type="text" id="maxPrice" class="inputs" value="30000">
+        <button id="priceInvoicesBtn" class="invoiceBtn">faktura - auta z danego zakresu cen</button>
+        <div id="priceCarInvoices" class="downloads"></div>
+    </div>
+    <div id="data-container">
+
+    </div>
+</div>
+<script src="./search.js"></script>
+</body>

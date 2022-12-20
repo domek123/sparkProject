@@ -1,7 +1,7 @@
 GetData = async () => {
     const options = {
         method: "POST",
-        data:{}
+        body:{}
     };
     let response = await fetch("/json", options)
 
@@ -13,7 +13,7 @@ GetData = async () => {
 generateData = async () => {
     const options = {
         method: "POST",
-        data:{}
+        body:{}
     };
     let response = await fetch("/generate", options)
 
@@ -22,18 +22,46 @@ generateData = async () => {
     else
         return await response.json() // response.json
 }
-generateInvoice = async (id) => {
+const allCarInvoices = []
+const yearCarInvoices = []
+const priceCarInvoices = []
+generateInvoice = async (id,body,array,href,name)=>{
     const options = {
         method: "POST",
-        body:JSON.stringify({id:id})
+        body:JSON.stringify(body)
     };
-    let response = await fetch("/invoice", options)
-
-    if (!response.ok)
-        return response.status
-    else
-        return await response.json() // response.json
+    await fetch("/"+href, options).then(response=>response.json()).then(data=>{
+        array.push(data)
+        let str = ''
+        array.forEach(item=>{
+            str+= `<a href='/invoices?id=${name}${item}'>pobierz</a>`
+        })
+        document.getElementById(id).innerHTML = str
+    })
 }
+document.getElementById("allInvoicesBtn").onclick = () => generateInvoice(
+    "allCarInvoices",
+    {},
+    allCarInvoices,
+    "allCarInvoice",
+    "invoice_all_cars_"
+    )
+document.getElementById("yearInvoicesBtn").onclick = () => generateInvoice(
+    "yearCarInvoices",
+    {year:document.getElementById("rok").value},
+    yearCarInvoices,
+    "yearCarInvoice",
+    "invoice_year_cars_"
+    )
+document.getElementById("priceInvoicesBtn").onclick = () => generateInvoice(
+    "priceCarInvoices",
+    {min:document.getElementById("minPrice").value,max:document.getElementById("maxPrice").value},
+    priceCarInvoices,
+    "priceCarInvoice",
+    "invoice_price_cars_",
+
+    )
+
 window.onload = async() =>{
     const data = await GetData()
     generatePage(data)
@@ -52,7 +80,6 @@ generatePage = (cars) =>{
     cars.forEach(c=>{
         html +="<div class='flex'>";
         html +="<div class='container-item'>"+i+"</div>";
-        html +="<div class='container-item'>"+c['id']+"</div>";
         html +="<div class='container-item'>"+c['model']+"</div>";
         html +="<div class='container-item'>"+c['rok']+"</div>";
         html +="<div class='container-item flex-col'>";
@@ -61,18 +88,12 @@ generatePage = (cars) =>{
         })
         html +="</div>";
         html +=`<div class='container-item box' style='background-color:`+c['color']+`;'></div>`;
-        html +="<div class='container-item'><button onclick='genVat(`"+c['id']+"`)'>generuj fakture VAT</button></div>";
-        if(c['invoice']==true){
-            html +="<div class='container-item'><a href='/invoices?id=" + c['id'] +"'>pobierz</a></div>";
-        }
+        html += `<div class='container-item'>${c['data']}</div>`;
+        html += `<div class='container-item'>${c['cena']}</div>`;
+        html += `<div class='container-item'>${c['vat']}</div>`;
         html +="</div>";
         i++;
     })
     html +="</div>";
     document.getElementById("data-container").innerHTML = html
-}
-async function genVat(id){
-    console.log(id)
-    const data = await generateInvoice(id)
-    generatePage(data)
 }

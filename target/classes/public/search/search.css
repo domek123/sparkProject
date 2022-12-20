@@ -1,0 +1,16 @@
+.invoiceBtn{
+    border-color: blue !important;
+    background-color: blue !important;
+    color:white !important;
+    height: 50px !important;
+}
+.inputs{
+    height: 35px;
+    width: 100px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+.downloads{
+    display: flex;
+    flex-direction: column;
+}

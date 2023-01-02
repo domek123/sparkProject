@@ -15,12 +15,17 @@ import java.util.stream.Collectors;
 import spark.Request;
 import spark.Response;
 
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.ServletException;
+import javax.servlet.http.Part;
+
 import static spark.Spark.externalStaticFileLocation;
 import static spark.Spark.staticFiles;
 
 public class App {
     private static Gson gson = new Gson();
     private static ArrayList<Car> cars = new ArrayList<>();
+    private static String uuid;
     public static void main(String[] args) {
         externalStaticFileLocation("C:\\appfolder\\src\\main\\resources\\public");
         staticFiles.location("/public");
@@ -34,6 +39,8 @@ public class App {
         post("/allCarInvoice", App::AllCarInvoice);
         post("/yearCarInvoice", App::YearCarInvoice);
         post("/priceCarInvoice", App::PriceCarInvoice);
+        get("/setUUID",App::SetUUID);
+        get("/upload",App::Upload);
     }
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
@@ -170,4 +177,29 @@ public class App {
         res.type("application/json");
         return gson.toJson(Invoices.GeneratePriceCarsInvoice(l,prices.getMin(),prices.getMax()));
     }
+    public static String SetUUID(Request req,Response res){
+        String id = req.queryParams("id");
+        uuid = id;
+        res.redirect("/upload/upload.html");
+        return "";
+    }
+    public static String Upload(Request req,Response res) throws ServletException, IOException {
+        req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/photos"));
+        System.out.println("plików jest: "+req.raw().getParts().size());
+        System.out.println("parts "+req.raw().getParts());
+        for(Part p : req.raw().getParts()){
+            System.out.println(p);
+            System.out.println(p.getInputStream());
+            InputStream inputStream = p.getInputStream();
+            // inputstream to byte
+            byte[] bytes = inputStream.readAllBytes();
+            String fileName = "unikalna_nazwa.jpg";
+            FileOutputStream fos = new FileOutputStream("photos/" + fileName);
+            fos.write(bytes);
+            fos.close();
+            // dodaj do Arraylist z nazwami aut do odesłania do przeglądarki
+        }
+        return "";
+    }
+
 }

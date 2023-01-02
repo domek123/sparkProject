@@ -1,21 +1,9 @@
-GetData = async () => {
+GetData = async (href) => {
     const options = {
         method: "POST",
         body:{}
     };
-    let response = await fetch("/json", options)
-
-    if (!response.ok)
-        return response.status
-    else
-        return await response.json() // response.json
-}
-generateData = async () => {
-    const options = {
-        method: "POST",
-        body:{}
-    };
-    let response = await fetch("/generate", options)
+    let response = await fetch("/"+href, options)
 
     if (!response.ok)
         return response.status
@@ -63,12 +51,11 @@ document.getElementById("priceInvoicesBtn").onclick = () => generateInvoice(
     )
 
 window.onload = async() =>{
-    const data = await GetData()
+    const data = await GetData("json")
     generatePage(data)
 }
 document.getElementById("genBtn").onclick = async()=>{
-    const data = await generateData()
-    console.log(data)
+    const data = GetData("generate")
     generatePage(data)
 }
 

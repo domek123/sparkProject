@@ -38,7 +38,13 @@ class Car{
     private String data;
     private int cena;
     private int vat;
+    private ArrayList<String> images = new ArrayList();
+    private boolean invoice;
 
+
+    public ArrayList<String> getImages() {
+        return images;
+    }
     public String getData() {
         return data;
     }
@@ -51,7 +57,6 @@ class Car{
         return vat;
     }
 
-    private boolean invoice;
 
     public void setInvoice(boolean invoice) {
         this.invoice = invoice;
@@ -108,6 +113,9 @@ class Car{
         this.rok = rok;
     }
 
+    public void AddToImageArray(String url){
+        images.add(url);
+    }
     @Override
     public String toString() {
         return "Car{" +

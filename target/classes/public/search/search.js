@@ -55,7 +55,7 @@ window.onload = async() =>{
     generatePage(data)
 }
 document.getElementById("genBtn").onclick = async()=>{
-    const data = GetData("generate")
+    const data = await GetData("generate")
     generatePage(data)
 }
 

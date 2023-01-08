@@ -5,6 +5,7 @@ import com.google.gson.*;
 
 import java.io.*;
 import java.nio.file.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import com.fasterxml.uuid.Generators;
@@ -40,7 +41,8 @@ public class App {
         post("/yearCarInvoice", App::YearCarInvoice);
         post("/priceCarInvoice", App::PriceCarInvoice);
         get("/setUUID",App::SetUUID);
-        get("/upload",App::Upload);
+        get("/thumb",App::ReturnThumb);
+        post("/upload",App::Upload);
     }
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
@@ -187,18 +189,34 @@ public class App {
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/photos"));
         System.out.println("plików jest: "+req.raw().getParts().size());
         System.out.println("parts "+req.raw().getParts());
+        SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+        int index = 0;
+        ArrayList<String> arrayList = new ArrayList<>();
         for(Part p : req.raw().getParts()){
             System.out.println(p);
             System.out.println(p.getInputStream());
             InputStream inputStream = p.getInputStream();
             // inputstream to byte
             byte[] bytes = inputStream.readAllBytes();
-            String fileName = "unikalna_nazwa.jpg";
+            Date date = new Date();
+            String fileName = "img_" + formatter.format(date) + "_" + index + ".jpg";
             FileOutputStream fos = new FileOutputStream("photos/" + fileName);
             fos.write(bytes);
             fos.close();
-            // dodaj do Arraylist z nazwami aut do odesłania do przeglądarki
+            arrayList.add(fileName);
+            index+=1;
         }
+        return gson.toJson(arrayList);
+    }
+    public static String ReturnThumb(Request req,Response res) throws IOException {
+        System.out.println("AAAAAAAAAA");
+        File file = new File("path_on_server");
+        res.type("image/jpeg");
+        OutputStream outputStream = null;
+        outputStream = res.raw().getOutputStream();
+        Path p1 = Paths.get(req.queryParams("id"));
+        outputStream.write(Files.readAllBytes(p1));
+        outputStream.flush();
         return "";
     }
 

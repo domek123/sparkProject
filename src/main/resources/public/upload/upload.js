@@ -31,9 +31,13 @@ document.getElementById("data-container").ondrop = function (e) {
     const body = fd
 
     fetch("/upload", { method: "post", body })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
             alert(data)
+            data.forEach(path=>{
+                document.getElementById("data-container").innerHTML += `<img src="" alt="obrazek" width="100px" height="100px"/>`
+            })
+
         })
         .catch(error => console.log(error))
 

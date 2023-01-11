@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.ArrayList;
+
 class Id{
     private String id;
 
@@ -41,5 +43,12 @@ class ModifyCar{
 
     public String getRok() {
         return rok;
+    }
+}
+class Photos{
+    private ArrayList<String> data;
+
+    public ArrayList<String> getData() {
+        return data;
     }
 }

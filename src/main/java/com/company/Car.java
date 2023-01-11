@@ -113,8 +113,14 @@ class Car{
         this.rok = rok;
     }
 
-    public void AddToImageArray(String url){
-        images.add(url);
+    public void AddToImageArray(ArrayList<String> list){
+        for(String url:list){
+            if(!images.contains(url)){
+                images.add(url);
+            }
+        }
+
+
     }
     @Override
     public String toString() {

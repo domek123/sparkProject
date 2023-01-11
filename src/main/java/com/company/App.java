@@ -43,7 +43,9 @@ public class App {
         get("/setUUID",App::SetUUID);
         get("/thumb",App::ReturnThumb);
         post("/upload",App::Upload);
+        post("/savePhotos",App::SavePhotos);
     }
+
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
         car.setId(Generators.randomBasedGenerator().generate());
@@ -187,14 +189,10 @@ public class App {
     }
     public static String Upload(Request req,Response res) throws ServletException, IOException {
         req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement("/photos"));
-        System.out.println("plików jest: "+req.raw().getParts().size());
-        System.out.println("parts "+req.raw().getParts());
         SimpleDateFormat formatter = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
         int index = 0;
         ArrayList<String> arrayList = new ArrayList<>();
         for(Part p : req.raw().getParts()){
-            System.out.println(p);
-            System.out.println(p.getInputStream());
             InputStream inputStream = p.getInputStream();
             // inputstream to byte
             byte[] bytes = inputStream.readAllBytes();
@@ -206,18 +204,30 @@ public class App {
             arrayList.add(fileName);
             index+=1;
         }
+        System.out.println("XXX:" + arrayList);
         return gson.toJson(arrayList);
     }
-    public static String ReturnThumb(Request req,Response res) throws IOException {
-        System.out.println("AAAAAAAAAA");
+    public static OutputStream ReturnThumb(Request req,Response res) throws IOException {
         File file = new File("path_on_server");
         res.type("image/jpeg");
         OutputStream outputStream = null;
         outputStream = res.raw().getOutputStream();
-        Path p1 = Paths.get(req.queryParams("id"));
-        outputStream.write(Files.readAllBytes(p1));
+        outputStream.write(Files.readAllBytes(Path.of("photos/"+req.queryParams("id"))));
         outputStream.flush();
-        return "";
+        return outputStream;
+    }
+    private static String SavePhotos(Request req, Response res) {
+        Photos photos = gson.fromJson(req.body(),Photos.class);
+        System.out.println(photos.getData());
+        Car c = null;
+        for(Car car :cars){
+            if(car.getId().toString().equals(uuid)){
+                car.AddToImageArray(photos.getData());
+                c=car;
+            }
+        }
+        System.out.println(c.getImages());
+        return "zapisano";
     }
 
 }

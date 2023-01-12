@@ -44,7 +44,9 @@ public class App {
         get("/thumb",App::ReturnThumb);
         post("/upload",App::Upload);
         post("/savePhotos",App::SavePhotos);
+        post("/getPhotos",App::GetPhotos);
     }
+
 
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
@@ -184,7 +186,13 @@ public class App {
     public static String SetUUID(Request req,Response res){
         String id = req.queryParams("id");
         uuid = id;
-        res.redirect("/upload/upload.html");
+        System.out.println(req.queryParams("type"));
+        if(req.queryParams("type").equals("upload")){
+            res.redirect("/upload/upload.html");
+        }else if(req.queryParams("type").equals("gallery")){
+            res.redirect("/gallery/gallery.html");
+        }
+
         return "";
     }
     public static String Upload(Request req,Response res) throws ServletException, IOException {
@@ -229,5 +237,15 @@ public class App {
         System.out.println(c.getImages());
         return "zapisano";
     }
+    private static String GetPhotos(Request req, Response res) {
+        ArrayList<String> photoList = new ArrayList<>();
+        for(Car car :cars){
+            if(car.getId().toString().equals(uuid)){
+                photoList = car.getImages();
+            }
+        }
+        return gson.toJson(photoList);
+    }
+
 
 }

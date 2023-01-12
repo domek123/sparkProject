@@ -38,7 +38,8 @@ generatePage = (cars) =>{
         html +="<div class='container-item box' style='background-color:"+c['color']+";'></div>";
         html +="<div class='container-item'><button onclick='deleteCar(`"+c['id']+"`)'>delete car</button></div>";
         html +="<div class='container-item'><button onclick='updateCarShow(`"+c['model']+"`,`"+c['id']+"`,`"+c['rok']+"`)'>update car</button></div>";
-        html +="<div class='container-item'><a href='/setUUID?id=" + c['id'] +"'>uploader</a></div>"
+        html +="<div class='container-item'><a href='/setUUID?id=" + c['id'] +"&type=upload'>uploader</a></div>"
+        html +="<div class='container-item'><a href='/setUUID?id=" + c['id'] +"&type=gallery'>gallery</a></div>"
         html +="</div>";
         i++;
     })

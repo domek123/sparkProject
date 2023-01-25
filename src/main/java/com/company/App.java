@@ -8,7 +8,6 @@ import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.fasterxml.uuid.Generators;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import java.util.List;
@@ -45,15 +44,39 @@ public class App {
         post("/upload",App::Upload);
         post("/savePhotos",App::SavePhotos);
         post("/getPhotos",App::GetPhotos);
+        post("/getSize",App::GetSize);
+        post("/rotate",App::Rotate);
+        post("/flip",App::Flip);
+        post("/crop",App::Crop);
+        get("/image",App::ReturnThumb);
     }
 
+    private static String GetSize(Request request, Response response) throws IOException {
+        Id path = gson.fromJson(request.body(),Id.class);
+        return Imaging.getSize(path.getId());
+    }
+
+    private static String Crop(Request request, Response response) throws IOException {
+        Crop crop = gson.fromJson(request.body(),Crop.class);
+        return Imaging.Crop(crop.getId(),crop.getX(),crop.getY(),crop.getW(),crop.getH());
+    }
+
+    private static String Flip(Request request, Response response) throws IOException {
+        Flip flip = gson.fromJson(request.body(),Flip.class);
+        return Imaging.Flip(flip.getType(),flip.getId());
+    }
+
+    private static String Rotate(Request request, Response response) throws IOException {
+        Id path = gson.fromJson(request.body(),Id.class);
+        return Imaging.Rotate(path.getId());
+    }
 
     private static String AddFunction(Request req,Response res){
         Car car = gson.fromJson(req.body(), Car.class);
-        car.setId(Generators.randomBasedGenerator().generate());
-        cars.add(car);
+        Car c = new Car(car.getModel(),car.getRok(),car.getAirbags(),car.getColor());
+        cars.add(c);
         res.type("application/json");
-        return gson.toJson(car.toString());
+        return gson.toJson(c.toString());
     }
     private static String GetCarsFunction(Request req,Response res){
         return gson.toJson(cars);
@@ -216,7 +239,7 @@ public class App {
         return gson.toJson(arrayList);
     }
     public static OutputStream ReturnThumb(Request req,Response res) throws IOException {
-        File file = new File("path_on_server");
+        System.out.println("obrazek" + req.queryParams("id"));
         res.type("image/jpeg");
         OutputStream outputStream = null;
         outputStream = res.raw().getOutputStream();

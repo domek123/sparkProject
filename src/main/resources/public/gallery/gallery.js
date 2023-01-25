@@ -18,11 +18,7 @@ window.onload = async() =>{
 }
 const genImages = (data) =>{
     data.forEach(path=>{
-        document.getElementById("photos-container").innerHTML += `<div class="image_car"><img src="/thumb?id=${path}" alt="obrazek"/><div class="edit_button" onclick="editPhoto('${path}')"><p>edit</p></div></div>`
+        document.getElementById("photos-container").innerHTML += `<div class="image_car"><img src="/thumb?id=${path}" alt="obrazek"/><a href="/imager/imager.html?path=${path}"><div class="edit_button"><p>edit</p></div></a></div>`
     })
-
-}
-const editPhoto = (id) =>{
-    console.log(id)
 }
 

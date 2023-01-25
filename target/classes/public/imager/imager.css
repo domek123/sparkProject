@@ -1,0 +1,37 @@
+.button-container >div{
+    width:150px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: blue;
+    color:white;
+    border-radius: 10px;
+    text-align: center;
+    margin:10px;
+}
+.button-container > div> div{
+    width: 50%;
+    height: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+#flipV{
+    background-color: lightskyblue;
+    border-radius: 0 10px 10px 0;
+}
+#flipV p{
+    width: 80%;
+    margin: 0 auto;
+}
+.image_car{
+    border:2px dashed black;
+    margin:10px;
+    position: relative;
+    overflow: hidden;
+    width: 500px;
+    height: 400px;
+    background-size:cover;
+    background-position: center;
+}

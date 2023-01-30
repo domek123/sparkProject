@@ -1,6 +1,9 @@
-let params = new URLSearchParams(location.search);
+
 let flag = true
 let x,y,w,h
+let sx = 1
+let sy = 1
+let params = new URLSearchParams(location.search);
 const path = params.get('path')
 const DeleteLast = (text) =>{
     return text.substring(0,text.length - 2)
@@ -9,8 +12,10 @@ const genImage = (data)=>{
     const d = data.split(",")
     console.log(d)
     carPhoto.style.backgroundImage = `url("/image?id=${path}&rand=${Math.random()}")`
-    carPhoto.style.width = d[0] + "px"
-    carPhoto.style.height = d[1] + "px"
+    sx = d[0]/500;
+    sy = d[1]/400;
+    // carPhoto.style.width = d[0] + "px"
+    // carPhoto.style.height = d[1] + "px"
 }
 const carPhoto = document.getElementById("carPhoto")
 window.onload = async() =>{
@@ -70,10 +75,11 @@ carPhoto.addEventListener("mousedown",(e)=>{
 })
 carPhoto.addEventListener("mouseup",(e)=>{
     console.log("myszka klikneła",e.offsetX,e.offsetY)
-    x = DeleteLast(div.style.left)
-    y = DeleteLast(div.style.top)
-    w = DeleteLast(div.style.width)
-    h = DeleteLast(div.style.height)
+    x = Math.floor(parseInt(DeleteLast(div.style.left))*sx)
+    y = Math.floor(parseInt(DeleteLast(div.style.top))*sy)
+    w = Math.floor(parseInt(DeleteLast(div.style.width))*sx)
+    h = Math.floor(parseInt(DeleteLast(div.style.height))*sy)
+    console.log(sx,sy,x,y,w,h)
     flag = false
 })
 document.getElementById("crop").onclick = async()=>{

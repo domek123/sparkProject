@@ -8,16 +8,15 @@ const path = params.get('path')
 const DeleteLast = (text) =>{
     return text.substring(0,text.length - 2)
 }
+const carPhoto = document.getElementById("carPhoto")
 const genImage = (data)=>{
     const d = data.split(",")
     console.log(d)
     carPhoto.style.backgroundImage = `url("/image?id=${path}&rand=${Math.random()}")`
     sx = d[0]/500;
     sy = d[1]/400;
-    // carPhoto.style.width = d[0] + "px"
-    // carPhoto.style.height = d[1] + "px"
 }
-const carPhoto = document.getElementById("carPhoto")
+
 window.onload = async() =>{
     const options = {
         method: "POST",
@@ -79,7 +78,6 @@ carPhoto.addEventListener("mouseup",(e)=>{
     y = Math.floor(parseInt(DeleteLast(div.style.top))*sy)
     w = Math.floor(parseInt(DeleteLast(div.style.width))*sx)
     h = Math.floor(parseInt(DeleteLast(div.style.height))*sy)
-    console.log(sx,sy,x,y,w,h)
     flag = false
 })
 document.getElementById("crop").onclick = async()=>{

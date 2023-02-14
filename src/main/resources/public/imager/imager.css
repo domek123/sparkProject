@@ -29,9 +29,8 @@
     border:2px dashed black;
     margin:10px;
     position: relative;
-    overflow: hidden;
+    background-size: 500px 400px;
     width: 500px;
     height: 400px;
-    background-size:cover;
     background-position: center;
 }
